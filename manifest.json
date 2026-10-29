@@ -1,0 +1,38 @@
+{
+  "id": "la-granja-del-saber",
+  "name": "La Granja del Saber — Juego Educativo",
+  "short_name": "La Granja",
+  "description": "Juego interactivo de Lengua y Matemática para 1.º y 2.º grado de primaria con Pío el Pollito.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fffdf7",
+  "theme_color": "#38b000",
+  "lang": "es-AR",
+  "categories": [
+    "education",
+    "games",
+    "kids"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

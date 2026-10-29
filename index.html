@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Granja del Saber — Juego Educativo para Primer Ciclo</title>
+  <meta name="description" content="Aplicación interactiva de Lengua y Matemática para 1.º y 2.º grado de primaria. Aprendé con Pío el Pollito en La Granja del Saber.">
+  
+  <!-- Tipografía amigable para alfabetización inicial infantil -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- PWA & Mobile Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#38b000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="La Granja">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+
+  <!-- Estilos modulares externos -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Escenario ambiental campestre animado -->
+  <div class="scenery-background" aria-hidden="true">
+    <div class="sun-glow"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="hills-back"></div>
+    <div class="hills-front"></div>
+    
+    <div class="windmill-deco">
+      <div class="windmill-base"></div>
+      <div class="windmill-blades">
+        <div class="blade"></div>
+        <div class="blade"></div>
+        <div class="blade"></div>
+        <div class="blade"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas para lluvia de confeti -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- ========================================================================
+       BARRA SUPERIOR (HEADER)
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="brand-title" id="btnLogoHome" title="Ir al Mapa de la Granja">
+      <div class="brand-logo-icon" aria-hidden="true">🚜</div>
+      <div class="brand-text">
+        <h1>La Granja del Saber</h1>
+        <span>Lengua y Matemática • Primer Ciclo</span>
+      </div>
+    </div>
+
+    <!-- Perfil del Estudiante (Nombre y Avatar) -->
+    <div class="header-player-box" id="btnEditPlayer" title="Tocá acá para cambiar tu nombre y personaje">
+      <span class="player-avatar-mini" id="headerPlayerAvatar" aria-hidden="true">👦</span>
+      <span class="player-name-label" id="headerPlayerName">Martín</span>
+      <span style="font-size: 0.85rem; opacity: 0.6;">✏️</span>
+    </div>
+
+    <!-- Controles didácticos, estrellas y audio -->
+    <div class="header-controls">
+      <div class="stars-badge" title="Tus estrellas conseguidas">
+        <span aria-hidden="true">⭐</span>
+        <span id="totalStarsCount">0</span>/12
+      </div>
+      <button class="btn-icon btn-install-pwa" id="btnInstallPwa" title="Instalar la aplicación en esta pantalla">
+        📲 <span id="installBtnText">Instalar</span>
+      </button>
+      <button class="btn-icon btn-music" id="btnToggleMusic" title="Música folclórica suave de fondo">
+        🎵 <span id="musicBtnText">Música OFF</span>
+      </button>
+      <button class="btn-icon" id="btnResetProgress" title="Reiniciar progreso para otro estudiante">
+        🔄 Reiniciar
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       CONTENIDO PRINCIPAL
+       ======================================================================== -->
+  <main class="main-container">
+
+    <!-- Tarjeta de Pío el Pollito (Guía afectivo y motivador con sintetizador de voz) -->
+    <section class="pio-card" aria-label="Consejo de Pío el Pollito">
+      <div class="pio-avatar-wrap" id="btnPioAvatar" title="¡Tocá a Pío para escucharlo cantar!">
+        <div class="pio-emoji" aria-hidden="true">🐥</div>
+      </div>
+      <div class="pio-bubble">
+        <div class="pio-speaker-tag">
+          <span>🐥</span> Pío el Pollito te dice:
+        </div>
+        <p class="pio-message" id="pioSpeechText">¡Hola! Te doy la bienvenida a La Granja del Saber. Elegí un lugar del mapa para empezar a jugar.</p>
+        <button class="btn-speak-voice" id="btnSpeakPio" title="Leer en voz alta con entonación infantil">
+          🔊 <span>Escuchar a Pío</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         VISTA 1: MAPA DE LA GRANJA (SELECCIÓN DE ESTACIONES)
+         ====================================================================== -->
+    <section id="viewMap" class="view-section active" aria-label="Mapa de la Granja">
+      <div class="map-header">
+        <h2>Elegí un rincón de la Granja</h2>
+        <p>Avanzá paso a paso: cada rincón superado desbloquea el siguiente.</p>
+      </div>
+
+      <div class="levels-grid">
+
+        <!-- Estación 1: El Corral de Pío -->
+        <article class="level-card" id="cardLevel1" onclick="GameController.startLevel(1)">
+          <div class="level-badge-num">Nivel 1</div>
+          <div class="level-illustration" aria-hidden="true">🐣</div>
+          <h3 class="level-title">El Corral de Pío</h3>
+          <p class="level-desc">Conteo directo de animales hasta 10, lectura de números en palabras y sonido inicial de vocales.</p>
+          <div class="level-stars-row" id="starsLevel1">
+            <span class="star-icon">★</span>
+            <span class="star-icon">★</span>
+            <span class="star-icon">★</span>
+          </div>
+          <button class="btn-play-level">¡Entrar al Corral!</button>
+        </article>
+
+        <!-- Estación 2: La Huerta de las Sílabas -->
+        <article class="level-card locked" id="cardLevel2" onclick="GameController.startLevel(2)">
+          <div class="level-badge-num">Nivel 2</div>
+          <div class="level-illustration" aria-hidden="true">🥕</div>
+          <h3 class="level-title">La Huerta de las Sílabas</h3>
+          <p class="level-desc">Armado interactivo de palabras con fichas de sílabas y sumas con frutas y verduras frescas.</p>
+          <div class="level-stars-row" id="starsLevel2">
+            <span class="star-icon">★</span>
+            <span class="star-icon">★</span>
+            <span class="star-icon">★</span>
+          </div>
+          <button class="btn-play-level">¡Cosechar Sílabas!</button>
+        </article>
+
+        <!-- Estación 3: El Granero de los Números -->
+        <article class="level-card locked" id="cardLevel3" onclick="GameController.startLevel(3)">
+          <div class="level-badge-num">Nivel 3</div>
+          <div class="level-illustration" aria-hidden="true">🌾</div>
+          <h3 class="level-title">El Granero de los Números</h3>
+          <p class="level-desc">Billetes de $10 y monedas de $1 para pagar, números hasta el 50 y restas con soporte gráfico.</p>
+          <div class="level-stars-row" id="starsLevel3">
+            <span class="star-icon">★</span>
+            <span class="star-icon">★</span>
+            <span class="star-icon">★</span>
+          </div>
+          <button class="btn-play-level">¡Abrir el Granero!</button>
+        </article>
+
+        <!-- Estación 4: La Gran Fiesta -->
+        <article class="level-card locked" id="cardLevel4" onclick="GameController.startLevel(4)">
+          <div class="level-badge-num">Nivel 4</div>
+          <div class="level-illustration" aria-hidden="true">🎈</div>
+          <h3 class="level-title">La Gran Fiesta</h3>
+          <p class="level-desc">Comprensión lectora de oraciones breves, escalas numéricas de 2 en 2, 5 en 5 y 10 en 10.</p>
+          <div class="level-stars-row" id="starsLevel4">
+            <span class="star-icon">★</span>
+            <span class="star-icon">★</span>
+            <span class="star-icon">★</span>
+          </div>
+          <button class="btn-play-level">¡Ir a la Fiesta!</button>
+        </article>
+
+      </div>
+
+      <!-- Banner de Graduación / Diploma -->
+      <div class="diploma-promo-card">
+        <div class="diploma-promo-text">
+          <h3>📜 Gran Diploma de Maestro de la Granja</h3>
+          <p>Completá los rincones para recibir tu diploma con honores, listo para imprimir o guardar en PDF.</p>
+        </div>
+        <button class="btn-diploma" id="btnOpenDiploma">
+          🎖️ Ver mi Diploma
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         VISTA 2: ARENA DE JUEGO (ZONA DE DESAFÍO EN CURSO)
+         ====================================================================== -->
+    <section id="viewGame" class="view-section" aria-label="Zona de Desafío Activa">
+      <div class="game-arena">
+        
+        <!-- Barra superior del nivel -->
+        <div class="arena-top-nav">
+          <button class="btn-back-map" id="btnBackToMap">
+            ⬅️ Volver al Mapa
+          </button>
+          
+          <div class="arena-level-info">
+            <h3 id="currentLevelHeading">Nivel en curso</h3>
+            <div class="arena-progress-dots" id="progressDotsContainer"></div>
+          </div>
+
+          <div class="stars-badge" id="levelCurrentScoreBadge">
+            ⭐ <span id="levelTempStars">0</span>
+          </div>
+        </div>
+
+        <!-- Consigna pedagógica -->
+        <div class="task-prompt-box">
+          <div class="task-prompt-text" id="taskPromptText">
+            Cargando consigna didáctica...
+          </div>
+          <button class="btn-listen-prompt" id="btnListenTask" title="Escuchar consigna en voz alta">
+            🔊 Escuchar
+          </button>
+        </div>
+
+        <!-- Escenario Interactivo dinámico -->
+        <div class="interactive-stage" id="interactiveStage"></div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       BANNER DE FEEDBACK FLOTANTE (ACIERTO Y REINTENTO)
+       ======================================================================== -->
+  <div id="feedbackBanner" class="feedback-banner" role="status" aria-live="polite">
+    <span id="feedbackIcon">🎉</span>
+    <span id="feedbackMsg">¡Muy bien hecho!</span>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 1: VICTORIA DE NIVEL (ESTRELLAS Y PROGRESO)
+       ======================================================================== -->
+  <div id="levelCompleteModal" class="modal-overlay">
+    <div class="modal-card">
+      <div style="font-size: 3.8rem; animation: bouncePio 2s infinite;">🎉🐥</div>
+      <h2 class="modal-title" id="completeTitle">¡Excelente trabajo!</h2>
+      <div class="modal-stars-award" id="completeStarsRow">
+        <span>⭐</span><span>⭐</span><span>⭐</span>
+      </div>
+      <p class="modal-text" id="completeText">Superaste todas las actividades con mucha dedicación.</p>
+      <div class="modal-actions">
+        <button class="btn-action-submit" id="btnNextLevelModal">¡Siguiente Nivel! ➡️</button>
+        <button class="btn-back-map" id="btnMapModal">Volver al Mapa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: CONFIGURACIÓN DE NOMBRE Y AVATAR
+       ======================================================================== -->
+  <div id="playerModal" class="modal-overlay">
+    <div class="modal-card">
+      <div style="font-size: 3rem;">👋🎒</div>
+      <h2 class="modal-title">¿Quién está jugando?</h2>
+      <p class="modal-text">Elegí tu personaje y escribí tu nombre para tu diploma de honor:</p>
+      
+      <!-- Selector de Avatar -->
+      <div class="avatar-picker-grid" id="avatarPickerGrid">
+        <button class="avatar-option-btn selected" data-avatar="👦">👦</button>
+        <button class="avatar-option-btn" data-avatar="👧">👧</button>
+        <button class="avatar-option-btn" data-avatar="🐥">🐥</button>
+        <button class="avatar-option-btn" data-avatar="🐮">🐮</button>
+      </div>
+
+      <input type="text" id="inputPlayerName" class="input-player-name" placeholder="Tu nombre" maxlength="20" autocomplete="off">
+      <div class="modal-actions">
+        <button class="btn-action-submit" id="btnSavePlayerName">¡Listo! Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 3: GRAN DIPLOMA OFICIAL DE LA GRANJA
+       ======================================================================== -->
+  <div id="diplomaModal" class="modal-overlay">
+    <div class="diploma-card-container">
+      <div class="diploma-badge-ribbon" aria-hidden="true">🏆🌾</div>
+      
+      <div class="diploma-header-text">
+        <h2>Diploma de Honor</h2>
+        <h3>Gran Maestro de la Granja del Saber</h3>
+      </div>
+
+      <p class="diploma-certifies-text">Este certificado reconoce con mucho orgullo a:</p>
+      <div class="diploma-student-name" id="diplomaPlayerName">MARTÍN</div>
+
+      <p class="diploma-body-text">
+        Por haber demostrado curiosidad, dedicación y entusiasmo al aprender a 
+        <strong>leer oraciones breves, armar palabras con sílabas, contar colecciones, utilizar billetes de $10 y monedas de $1</strong> 
+        y resolver desafíos matemáticos en <strong>La Granja del Saber</strong>.
+      </p>
+
+      <div class="diploma-signatures">
+        <div class="diploma-sig-item">
+          <div class="sig-line">🐥 Pío el Pollito</div>
+          <div class="sig-role">Guardián de la Granja</div>
+        </div>
+        <div class="diploma-sig-item">
+          <div class="sig-line" id="diplomaDateText">28 de Octubre</div>
+          <div class="sig-role">Fecha de Graduación</div>
+        </div>
+        <div class="diploma-sig-item">
+          <div class="sig-line">⭐ ⭐ ⭐</div>
+          <div class="sig-role">Mención de Honor</div>
+        </div>
+      </div>
+
+      <div class="diploma-actions">
+        <button class="btn-action-submit" onclick="window.print()">🖨️ Imprimir / Guardar Diploma</button>
+        <button class="btn-back-map" id="btnCloseDiploma">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lógica JavaScript modular externa -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1580 @@
+/* ==========================================================================
+   1. VARIABLES Y SISTEMA DE DISEÑO DIDÁCTICO CAMPESINO
+   ========================================================================== */
+:root {
+  --font-main: 'Fredoka', 'Quicksand', system-ui, sans-serif;
+  --font-reading: 'Comic Neue', 'Fredoka', cursive, sans-serif;
+
+  /* Paleta armónica de la granja argentina */
+  --c-sky-top: #a7e9af;
+  --c-sky-mid: #cbf3f0;
+  --c-sky-light: #e0fbfb;
+  --c-sun-bright: #ffb703;
+  --c-sun-warm: #fb8500;
+  --c-grass-light: #70e000;
+  --c-grass-main: #38b000;
+  --c-grass-dark: #007200;
+  --c-dirt: #9c6644;
+  --c-wood-light: #b08968;
+  --c-wood-main: #7f5539;
+  --c-wood-dark: #58311e;
+  --c-barn-red: #d90429;
+  --c-barn-roof: #9b2226;
+  --c-cream-bg: #fffdf7;
+  --c-card-bg: #ffffff;
+  --c-text-main: #2b2d42;
+  --c-text-soft: #555b6e;
+  --c-blue-rio: #0077b6;
+  --c-blue-sky: #0096c7;
+  --c-purple-fun: #7209b7;
+
+  /* Sombras y relieves tridimensionales para pantallas táctiles */
+  --shadow-btn: 0 5px 0 rgba(0, 0, 0, 0.16);
+  --shadow-btn-active: 0 1px 0 rgba(0, 0, 0, 0.16);
+  --shadow-card: 0 8px 24px rgba(44, 30, 20, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-pop: 0 12px 30px rgba(0, 0, 0, 0.18);
+  --radius-sm: 14px;
+  --radius-md: 22px;
+  --radius-lg: 32px;
+  --radius-full: 9999px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  color: var(--c-text-main);
+  background: linear-gradient(180deg, #bde0fe 0%, #e0f2fe 35%, #d8f3dc 70%, #b7e4c7 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ==========================================================================
+   ESCENARIO VISUAL ANIMADO (SOL, MOLINO, COLINAS)
+   ========================================================================== */
+.scenery-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Sol brillante pulsante */
+.sun-glow {
+  position: absolute;
+  top: -30px;
+  right: 6%;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, #fff3b0 20%, #ffd166 60%, rgba(255, 183, 3, 0) 80%);
+  border-radius: 50%;
+  animation: pulseSun 4s ease-in-out infinite;
+}
+
+@keyframes pulseSun {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
+/* Nubes en movimiento */
+.cloud {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  animation: floatCloud linear infinite;
+}
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background: #ffffff;
+  border-radius: 50%;
+}
+.cloud-1 {
+  width: 130px; height: 42px; top: 35px; left: -160px;
+  animation-duration: 55s;
+}
+.cloud-1::before { width: 50px; height: 50px; top: -22px; left: 20px; }
+.cloud-1::after { width: 40px; height: 40px; top: -16px; left: 60px; }
+
+.cloud-2 {
+  width: 170px; height: 50px; top: 85px; left: -220px;
+  animation-duration: 75s; animation-delay: 18s;
+}
+.cloud-2::before { width: 65px; height: 65px; top: -30px; left: 28px; }
+.cloud-2::after { width: 50px; height: 50px; top: -20px; left: 85px; }
+
+@keyframes floatCloud {
+  from { transform: translateX(-250px); }
+  to { transform: translateX(calc(100vw + 350px)); }
+}
+
+/* Colinas verdes escalonadas */
+.hills-back {
+  position: absolute;
+  bottom: -40px;
+  left: -10%;
+  width: 120%;
+  height: 240px;
+  background: radial-gradient(circle at 50% 100%, #52b788 0%, #40916c 100%);
+  border-radius: 60% 60% 0 0 / 100px 100px 0 0;
+  opacity: 0.85;
+}
+
+.hills-front {
+  position: absolute;
+  bottom: -60px;
+  left: -5%;
+  width: 110%;
+  height: 200px;
+  background: radial-gradient(circle at 40% 120%, #74c69d 0%, #2d6a4f 100%);
+  border-radius: 50% 50% 0 0 / 90px 90px 0 0;
+  border-top: 6px solid #95d5b2;
+}
+
+/* Molino de viento en la colina */
+.windmill-deco {
+  position: absolute;
+  bottom: 125px;
+  right: 12%;
+  width: 50px;
+  height: 90px;
+  opacity: 0.65;
+}
+.windmill-base {
+  position: absolute;
+  bottom: 0;
+  left: 14px;
+  width: 22px;
+  height: 60px;
+  background: #7f5539;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
+}
+.windmill-blades {
+  position: absolute;
+  top: 20px;
+  left: 25px;
+  width: 60px;
+  height: 60px;
+  margin-left: -30px;
+  margin-top: -30px;
+  animation: spinBlades 12s linear infinite;
+}
+.blade {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 6px;
+  background: #fff;
+  transform-origin: 0 50%;
+  border-radius: 3px;
+}
+.blade:nth-child(1) { transform: rotate(0deg); }
+.blade:nth-child(2) { transform: rotate(90deg); }
+.blade:nth-child(3) { transform: rotate(180deg); }
+.blade:nth-child(4) { transform: rotate(270deg); }
+
+@keyframes spinBlades {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   2. ENCABEZADO Y CONTROLES SUPERIORES
+   ========================================================================== */
+.app-header {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 4px solid var(--c-wood-light);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.brand-logo-icon {
+  font-size: 2.4rem;
+  filter: drop-shadow(0 3px 2px rgba(0,0,0,0.15));
+  animation: tractorBounce 3s ease-in-out infinite;
+}
+
+@keyframes tractorBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.brand-text h1 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--c-wood-dark);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  text-shadow: 1px 1px 0 #fff;
+}
+
+.brand-text span {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--c-grass-dark);
+  display: block;
+}
+
+.header-player-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff8e7;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  border: 3px solid var(--c-sun-bright);
+  box-shadow: var(--shadow-btn);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.header-player-box:hover {
+  transform: translateY(-2px);
+  background: #fff1c2;
+}
+.player-avatar-mini {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.player-name-label {
+  font-weight: 800;
+  color: var(--c-text-main);
+  font-size: 1.05rem;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stars-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #fff3b0, #ffd166);
+  padding: 7px 16px;
+  border-radius: var(--radius-full);
+  border: 2px solid #f48c06;
+  box-shadow: var(--shadow-btn);
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #9a031e;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 800;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  background: #ffffff;
+  color: var(--c-text-main);
+  border: 2px solid #e2e8f0;
+  box-shadow: var(--shadow-btn);
+  transition: all 0.15s ease;
+}
+.btn-icon:hover {
+  transform: translateY(-2px);
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+.btn-icon:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-btn-active);
+}
+.btn-icon.active {
+  background: #e0f2fe;
+  border-color: var(--c-blue-rio);
+  color: var(--c-blue-rio);
+}
+
+.btn-install-pwa {
+  background: linear-gradient(135deg, #7b2cbf, #5a189a);
+  color: #ffffff;
+  border-color: #3c096c;
+  display: none;
+}
+.btn-install-pwa:hover {
+  background: linear-gradient(135deg, #9d4edd, #7b2cbf);
+}
+.btn-install-pwa.visible {
+  display: inline-flex;
+}
+
+/* ==========================================================================
+   3. CONTENEDOR PRINCIPAL Y PÍO EL POLLITO (MASCOTA GUÍA)
+   ========================================================================== */
+.main-container {
+  position: relative;
+  z-index: 10;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 16px 20px 100px;
+  width: 100%;
+  flex: 1;
+}
+
+.pio-card {
+  background: var(--c-cream-bg);
+  border: 4px solid var(--c-sun-bright);
+  border-radius: var(--radius-md);
+  padding: 16px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.pio-avatar-wrap {
+  flex-shrink: 0;
+  position: relative;
+  width: 86px;
+  height: 86px;
+  background: radial-gradient(circle, #fff9db 0%, #ffd166 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #f77f00;
+  box-shadow: var(--shadow-btn);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.pio-avatar-wrap:hover {
+  transform: scale(1.08) rotate(4deg);
+}
+
+.pio-emoji {
+  font-size: 3.5rem;
+  animation: bouncePio 2.6s ease-in-out infinite;
+  display: inline-block;
+  line-height: 1;
+}
+
+@keyframes bouncePio {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40% { transform: translateY(-8px) rotate(-5deg); }
+  60% { transform: translateY(-3px) rotate(5deg); }
+}
+
+.pio-bubble {
+  flex: 1;
+  position: relative;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 14px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.pio-bubble::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 11px solid transparent;
+  border-bottom: 11px solid transparent;
+  border-right: 14px solid #ffffff;
+  filter: drop-shadow(-2px 0 1px rgba(0, 0, 0, 0.08));
+}
+
+.pio-speaker-tag {
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #f77f00;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.pio-message {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--c-text-main);
+  line-height: 1.4;
+}
+
+.btn-speak-voice {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  box-shadow: 0 4px 0 #075985;
+  transition: all 0.15s ease;
+}
+.btn-speak-voice:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #075985;
+}
+.btn-speak-voice:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #075985;
+}
+.btn-speak-voice.speaking {
+  animation: pulseSpeaking 1.1s infinite;
+  background: linear-gradient(135deg, #7b2cbf, #5a189a);
+  box-shadow: 0 4px 0 #3c096c;
+}
+
+@keyframes pulseSpeaking {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   4. PANTALLA: MAPA DE NIVELES (MENU PRINCIPAL)
+   ========================================================================== */
+.view-section {
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+}
+.view-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.map-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.map-header h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--c-wood-dark);
+  text-shadow: 1px 1px 0 #ffffff;
+  margin-bottom: 4px;
+}
+.map-header p {
+  font-size: 1.15rem;
+  color: var(--c-text-soft);
+  font-weight: 600;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+.level-card {
+  background: var(--c-cream-bg);
+  border-radius: var(--radius-lg);
+  padding: 24px 18px;
+  text-align: center;
+  border: 4px solid var(--c-wood-light);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.level-card:hover:not(.locked) {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-pop);
+  border-color: var(--c-grass-main);
+}
+
+.level-card.locked {
+  opacity: 0.65;
+  filter: grayscale(0.7);
+  cursor: not-allowed;
+  border-color: #cbd5e1;
+}
+
+.level-badge-num {
+  position: absolute;
+  top: -16px;
+  background: var(--c-sun-bright);
+  color: var(--c-wood-dark);
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 4px 16px;
+  border-radius: var(--radius-full);
+  border: 3px solid #ffffff;
+  box-shadow: var(--shadow-btn);
+}
+
+.level-illustration {
+  font-size: 4.2rem;
+  margin: 10px 0;
+  line-height: 1;
+  filter: drop-shadow(0 4px 5px rgba(0,0,0,0.12));
+}
+
+.level-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--c-wood-dark);
+  margin-bottom: 6px;
+}
+
+.level-desc {
+  font-size: 0.98rem;
+  color: var(--c-text-soft);
+  font-weight: 500;
+  margin-bottom: 16px;
+  line-height: 1.35;
+  flex-grow: 1;
+}
+
+.level-stars-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 1.5rem;
+}
+.star-icon {
+  color: #cbd5e1;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+  transition: transform 0.2s;
+}
+.star-icon.filled {
+  color: #ffb703;
+  text-shadow: 0 0 10px rgba(255, 183, 3, 0.6);
+}
+
+.btn-play-level {
+  width: 100%;
+  background: linear-gradient(180deg, var(--c-grass-light), var(--c-grass-main));
+  color: #ffffff;
+  border: none;
+  padding: 11px 18px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  font-weight: 800;
+  box-shadow: 0 5px 0 var(--c-grass-dark);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.btn-play-level:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--c-grass-dark);
+}
+
+.level-card.locked .btn-play-level {
+  background: #94a3b8;
+  box-shadow: 0 4px 0 #64748b;
+  cursor: not-allowed;
+}
+
+/* Sección promocional de Diploma */
+.diploma-promo-card {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 4px dashed #d97706;
+  border-radius: var(--radius-lg);
+  padding: 22px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  box-shadow: var(--shadow-card);
+}
+.diploma-promo-text h3 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #92400e;
+  margin-bottom: 4px;
+}
+.diploma-promo-text p {
+  font-size: 1.05rem;
+  color: #78350f;
+  font-weight: 500;
+}
+.btn-diploma {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  border: none;
+  padding: 13px 26px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-main);
+  font-size: 1.15rem;
+  font-weight: 800;
+  box-shadow: 0 5px 0 #b45309;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s;
+}
+.btn-diploma:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 #b45309;
+}
+.btn-diploma:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #b45309;
+}
+
+/* ==========================================================================
+   5. PANTALLA: ZONA DE JUEGO (ARENA DE ACTIVIDADES)
+   ========================================================================== */
+.game-arena {
+  background: var(--c-cream-bg);
+  border: 4px solid var(--c-wood-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-pop);
+  padding: 26px;
+  position: relative;
+}
+
+.arena-top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 2px dashed #cbd5e1;
+}
+
+.btn-back-map {
+  background: #ffffff;
+  color: var(--c-wood-dark);
+  border: 2px solid #cbd5e1;
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-main);
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.btn-back-map:hover {
+  background: #f1f5f9;
+  transform: translateY(-2px);
+}
+.btn-back-map:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-btn-active);
+}
+
+.arena-level-info {
+  text-align: center;
+  flex-grow: 1;
+}
+.arena-level-info h3 {
+  font-size: 1.4rem;
+  color: var(--c-wood-dark);
+  font-weight: 800;
+}
+.arena-progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.prog-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  border: 2px solid #94a3b8;
+  transition: all 0.25s;
+}
+.prog-dot.active {
+  background: var(--c-sun-bright);
+  border-color: #f77f00;
+  transform: scale(1.3);
+}
+.prog-dot.done {
+  background: var(--c-grass-main);
+  border-color: var(--c-grass-dark);
+}
+
+/* Área de consigna didáctica */
+.task-prompt-box {
+  background: #eff6ff;
+  border-left: 6px solid var(--c-blue-rio);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+.task-prompt-text {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  line-height: 1.4;
+}
+.btn-listen-prompt {
+  flex-shrink: 0;
+  background: var(--c-blue-rio);
+  color: #ffffff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-main);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 0 #005f73;
+  transition: all 0.15s;
+}
+.btn-listen-prompt:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #005f73;
+}
+
+/* ==========================================================================
+   6. COMPONENTES DIDÁCTICOS E INTERACTIVOS
+   ========================================================================== */
+.interactive-stage {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+/* 6.1 Conteo interactivo de animales y frutas */
+.counting-farm-pen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  align-items: center;
+  max-width: 650px;
+  background: #e8f5e9;
+  padding: 24px;
+  border-radius: var(--radius-md);
+  border: 3px solid #81c784;
+  margin-bottom: 26px;
+  min-height: 150px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.countable-item {
+  font-size: 3.6rem;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.countable-item:hover {
+  transform: scale(1.18);
+}
+.countable-item.counted {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 10px #ffb703);
+}
+.countable-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #e63946;
+  color: #ffffff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  animation: popIn 0.25s ease-out;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+/* Tarjetas de opciones de respuesta */
+.options-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-option-card {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 16px 26px;
+  font-family: var(--font-main);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--c-text-main);
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  min-width: 120px;
+  text-align: center;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.btn-option-card:hover {
+  border-color: var(--c-sun-bright);
+  background: #fffbeb;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+.btn-option-card:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-btn-active);
+}
+.btn-option-card .option-subword {
+  font-size: 1rem;
+  color: var(--c-text-soft);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* 6.2 Fichas de Sílabas Interactivas (Huerta) */
+.syllables-builder-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 22px;
+}
+
+.word-target-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: #fef3c7;
+  border: 4px solid #f59e0b;
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-btn);
+}
+.word-target-emoji {
+  font-size: 4.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 3px 3px rgba(0,0,0,0.1));
+}
+.word-target-hint {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #92400e;
+}
+
+.syllable-slots-container {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.syllable-slot {
+  width: 110px;
+  height: 80px;
+  border: 3px dashed #94a3b8;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--c-text-main);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+.syllable-slot.filled {
+  border-style: solid;
+  border-color: #38b000;
+  background: #d8f3dc;
+  box-shadow: var(--shadow-btn);
+  animation: popIn 0.25s ease-out;
+}
+
+.syllable-tiles-bank {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  background: #f8fafc;
+  padding: 18px;
+  border-radius: var(--radius-md);
+  border: 2px solid #e2e8f0;
+  width: 100%;
+  max-width: 640px;
+}
+
+.syllable-tile {
+  background: #ffffff;
+  border: 3px solid #38bdf8;
+  border-radius: var(--radius-sm);
+  padding: 14px 24px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0369a1;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #0284c7;
+  transition: all 0.15s;
+  letter-spacing: 1px;
+}
+.syllable-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 #0284c7;
+  background: #f0f9ff;
+}
+.syllable-tile:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #0284c7;
+}
+.syllable-tile.used {
+  opacity: 0.25;
+  pointer-events: none;
+  transform: scale(0.9);
+  box-shadow: none;
+}
+
+/* 6.3 Sistema Monetario: Billetes de $10 y Monedas de $1 */
+.money-workshop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 22px;
+}
+
+.price-tag-card {
+  background: #fef2f2;
+  border: 4px solid #ef4444;
+  border-radius: var(--radius-md);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: var(--shadow-btn);
+}
+.price-tag-val {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #b91c1c;
+}
+
+.money-desks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 720px;
+}
+
+.money-drawer-column {
+  background: #ffffff;
+  border: 3px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 18px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+.money-drawer-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--c-wood-dark);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.money-interactive-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.btn-add-money {
+  padding: 11px 20px;
+  font-family: var(--font-main);
+  font-size: 1.15rem;
+  font-weight: 800;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-add-bill {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 0 #059669;
+}
+.btn-add-coin {
+  background: #f59e0b;
+  color: #ffffff;
+  box-shadow: 0 4px 0 #d97706;
+}
+.btn-add-money:hover {
+  transform: translateY(-2px);
+}
+.btn-add-money:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+.money-items-display {
+  min-height: 90px;
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #cbd5e1;
+}
+
+.money-bill-token {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border: 3px solid #059669;
+  color: #065f46;
+  font-weight: 800;
+  font-size: 1.2rem;
+  padding: 8px 18px;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  animation: popIn 0.25s ease-out;
+  transition: all 0.15s;
+}
+.money-bill-token:hover {
+  background: #fecdd3;
+  border-color: #e11d48;
+  color: #9f1239;
+  transform: scale(1.05);
+}
+
+.money-coin-token {
+  background: radial-gradient(circle, #fef3c7 40%, #fde68a 80%, #f59e0b 100%);
+  border: 3px solid #d97706;
+  color: #92400e;
+  font-weight: 800;
+  font-size: 1.25rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  cursor: pointer;
+  animation: popIn 0.25s ease-out;
+  transition: all 0.15s;
+}
+.money-coin-token:hover {
+  background: #fecdd3;
+  border-color: #e11d48;
+  color: #9f1239;
+  transform: scale(1.1);
+}
+
+.money-live-total-bar {
+  background: #e0f2fe;
+  border: 3px solid #38bdf8;
+  border-radius: var(--radius-full);
+  padding: 12px 28px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0369a1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-btn);
+}
+
+/* 6.4 Comprensión Lectora y Oraciones */
+.reading-comprehension-box {
+  background: #ffffff;
+  border: 4px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  max-width: 700px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.story-sentence-card {
+  background: #fdf4ff;
+  border: 3px solid #f0abfc;
+  border-radius: var(--radius-sm);
+  padding: 18px 24px;
+  margin-bottom: 20px;
+}
+.story-sentence-text {
+  font-family: var(--font-reading);
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #701a75;
+  line-height: 1.45;
+}
+
+/* Secuencias Numéricas */
+.sequence-track {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.sequence-step {
+  width: 75px;
+  height: 75px;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--c-wood-dark);
+  box-shadow: var(--shadow-btn);
+}
+.sequence-step.target-blank {
+  border: 3px dashed #f59e0b;
+  background: #fffbeb;
+  color: #d97706;
+  animation: pulseSpeaking 1.5s infinite;
+}
+
+.btn-action-submit {
+  margin-top: 22px;
+  background: linear-gradient(180deg, var(--c-grass-light), var(--c-grass-main));
+  color: #ffffff;
+  border: none;
+  padding: 14px 36px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-main);
+  font-size: 1.3rem;
+  font-weight: 800;
+  box-shadow: 0 6px 0 var(--c-grass-dark);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s;
+}
+.btn-action-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 0 var(--c-grass-dark);
+}
+.btn-action-submit:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--c-grass-dark);
+}
+
+/* ==========================================================================
+   7. FEEDBACK FLOTANTE Y MODALES DIDÁCTICOS
+   ========================================================================== */
+.feedback-banner {
+  position: fixed;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%) translateY(140px);
+  background: #ffffff;
+  border-radius: var(--radius-full);
+  padding: 15px 32px;
+  box-shadow: var(--shadow-pop);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+.feedback-banner.show {
+  transform: translateX(-50%) translateY(0);
+}
+.feedback-banner.success {
+  border: 4px solid #10b981;
+  color: #065f46;
+  background: #ecfdf5;
+}
+.feedback-banner.retry {
+  border: 4px solid #f59e0b;
+  color: #92400e;
+  background: #fffbeb;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 16px;
+  animation: fadeIn 0.25s ease-out;
+}
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--c-cream-bg);
+  border: 5px solid var(--c-wood-light);
+  border-radius: var(--radius-lg);
+  padding: 34px 28px;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-pop);
+  position: relative;
+  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-stars-award {
+  font-size: 3.8rem;
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.modal-title {
+  font-size: 2.2rem;
+  color: var(--c-wood-dark);
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.modal-text {
+  font-size: 1.25rem;
+  color: var(--c-text-soft);
+  margin-bottom: 26px;
+  line-height: 1.45;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Selector de Avatar del Estudiante */
+.avatar-picker-grid {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 16px 0;
+}
+.avatar-option-btn {
+  font-size: 2.8rem;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.avatar-option-btn:hover, .avatar-option-btn.selected {
+  border-color: var(--c-sun-bright);
+  background: #fffbeb;
+  transform: scale(1.15);
+  box-shadow: var(--shadow-btn);
+}
+
+.input-player-name {
+  font-family: var(--font-main);
+  font-size: 1.35rem;
+  font-weight: 800;
+  padding: 12px 22px;
+  border: 3px solid var(--c-sun-bright);
+  border-radius: var(--radius-full);
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  margin: 12px 0 20px;
+  outline: none;
+  color: var(--c-text-main);
+}
+.input-player-name:focus {
+  border-color: var(--c-blue-rio);
+  box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.2);
+}
+
+/* ==========================================================================
+   8. GRAN DIPLOMA OFICIAL DE LA GRANJA
+   ========================================================================== */
+.diploma-card-container {
+  background: #fffdf5;
+  border: 12px double #b45309;
+  border-radius: var(--radius-md);
+  padding: 38px 32px;
+  max-width: 780px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-pop);
+  position: relative;
+  background-image: radial-gradient(#fde68a 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+.diploma-badge-ribbon {
+  font-size: 4rem;
+  margin-bottom: 6px;
+}
+
+.diploma-header-text h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #92400e;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+
+.diploma-header-text h3 {
+  font-size: 1.35rem;
+  color: var(--c-grass-dark);
+  font-weight: 700;
+  margin-bottom: 22px;
+}
+
+.diploma-certifies-text {
+  font-size: 1.2rem;
+  color: var(--c-text-soft);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.diploma-student-name {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  text-decoration: underline wavy #38bdf8 3px;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+}
+
+.diploma-body-text {
+  font-size: 1.2rem;
+  color: var(--c-text-main);
+  line-height: 1.55;
+  max-width: 620px;
+  margin: 0 auto 28px;
+  font-weight: 500;
+}
+
+.diploma-signatures {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px dashed #d97706;
+}
+
+.diploma-sig-item {
+  text-align: center;
+}
+.diploma-sig-item .sig-line {
+  font-family: 'Comic Neue', cursive;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #b45309;
+  margin-bottom: 4px;
+}
+.diploma-sig-item .sig-role {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c-text-soft);
+  text-transform: uppercase;
+}
+
+.diploma-actions {
+  margin-top: 26px;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Canvas de confeti flotante */
+#confettiCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ==========================================================================
+   9. ESTILOS DE IMPRESIÓN OFICIAL DEL DIPLOMA
+   ========================================================================== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #diplomaModal, #diplomaModal * {
+    visibility: visible;
+  }
+  #diplomaModal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    padding: 0;
+  }
+  .diploma-card-container {
+    border-width: 8px;
+    box-shadow: none;
+    max-width: 100%;
+    margin: auto;
+  }
+  .diploma-actions {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   10. RESPONSIVE Y ACCESIBILIDAD
+   ========================================================================== */
+@media (max-width: 680px) {
+  .app-header {
+    padding: 10px 14px;
+  }
+  .brand-text h1 {
+    font-size: 1.35rem;
+  }
+  .brand-logo-icon {
+    font-size: 2rem;
+  }
+  .pio-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  .pio-bubble::before {
+    display: none;
+  }
+  .money-desks-grid {
+    grid-template-columns: 1fr;
+  }
+  .syllable-tile {
+    font-size: 1.35rem;
+    padding: 11px 18px;
+  }
+  .syllable-slot {
+    width: 88px;
+    height: 68px;
+    font-size: 1.35rem;
+  }
+  .story-sentence-text {
+    font-size: 1.45rem;
+  }
+  .diploma-student-name {
+    font-size: 1.9rem;
+  }
+}
